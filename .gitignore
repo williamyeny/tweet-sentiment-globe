@@ -8,6 +8,9 @@ Desktop.ini
 #node
 node_modules/
 
+#api keys
+config.json
+
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
