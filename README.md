@@ -13,20 +13,25 @@ Tweets are streamed live into the backend using the Twitter API. Every half a se
 
 ###Core:
 Node.js
+
 Express
+
 WebGL Globe
+
 socket.io
 
 ###Data:
 twitter (npm package)
+
 node-geocoder (npm package)
+
 sentiment (npm package)
 
 ## Running this project
 
 ###config.json
 
-In order to run this project you must create a config.json file. Grab your Twitter API and Google Geocoding API keys.
+In order to run this project you must create a config.json file. Grab your Twitter API and Google Geocoding API keys and arrange them like this:
 
 ```
 {
@@ -39,7 +44,6 @@ In order to run this project you must create a config.json file. Grab your Twitt
   "geocoder": {
     "api_key": ""
   }
-
 }
 ```
 
