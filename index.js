@@ -1,16 +1,19 @@
 var express = require("express");
 var app = express();
 var path = require("path");
-var Twitter = require("twitter");
-var geocoder = require("node-geocoder")({provider: "google", apiKey: "AIzaSyCDUaMr878iOgyixb66VIIGXKY4LrX_Pq0"});
+var twitter = require("twitter");
+var nodeGeocoder = require("node-geocoder");
 var sentiment = require("sentiment");
 
-var keys = require("./config.json");
-// console.log(keys);
+var config = require("./config.json");
+
+var keys = config.twitter;
+var client = new twitter(keys);
+
+var options = {provider: "google", apiKey: config.geocoder.api_key};
+var geocoder = nodeGeocoder(options);
 
 var port = 8080;
-
-var client = new Twitter(keys);
 
 var currentEvent = {};
 
@@ -27,12 +30,17 @@ var server = app.listen(port, function() {
   console.log("server started");
   var stream = client.stream("statuses/filter", {track: "trump", language: "en"});
   stream.on('data', function(event) {
-
-    if (event.user.location !== null && event.user.location !== undefined) {
-      currentEvent.text = event.text;
-      currentEvent.location = event.user.location;
-      console.log(currentEvent.location);
+    try {
+      if (event.user.location !== null && event.user.location !== undefined) {
+        currentEvent.text = event.text;
+        currentEvent.location = event.user.location;
+        // console.log(currentEvent.location);
+      }
+    } catch (e) {
+      console.log("Error on getting location: " + e);
     }
+
+
 
   });
 });
