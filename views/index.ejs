@@ -114,7 +114,11 @@
 <script type="text/javascript" src="/third-party/Detector.js"></script>
 <script type="text/javascript" src="/third-party/three.min.js"></script>
 <script type="text/javascript" src="/globe.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
+  var socket = io();
+  var color;
+  var initialized = false;
 
   var globe = DAT.Globe(document.getElementById('container'), {
     colorFn: function(label) {
@@ -125,23 +129,47 @@
          0xfe9872, 0x7f3f98, 0xf26522, 0x2bb673, 0xd7df23,
          0xe6b23a, 0x7ed3f7][label]);
     }
+    //17 is green
+    //7 is red
   });
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/search-smol.json', true);
-  xhr.onreadystatechange = function(e) {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        var data = JSON.parse(xhr.responseText);
-        window.data = data;
-        globe.addData(data, {format: 'legend'});
-        globe.createPoints();
-        globe.animate();
-        document.body.style.backgroundImage = 'none'; // remove loading
-      }
+
+  socket.on("get data", function(currentEvent) {
+    console.log(currentEvent);
+    if (currentEvent.comparative < 0) {
+      color = 7;
+      currentEvent.comparative *= -1;
+    } else {
+      color = 17;
     }
-  };
-  xhr.send(null);
+    globe.addData([currentEvent.latitude,currentEvent.longitude, currentEvent.comparative, color], {format: "legend"});
+    if (!initialized) {
+
+      globe.animate();
+      initialized = true;
+    }
+    globe.createPoints();
+  });
+
+  window.setInterval(function() {
+    document.body.style.backgroundImage = 'none'; // remove loading
+    socket.emit("get data");
+  }, 1000);
+  // var xhr = new XMLHttpRequest();
+  // xhr.open('GET', '/search-smol.json', true);
+  // xhr.onreadystatechange = function(e) {
+  //   if (xhr.readyState === 4) {
+  //     if (xhr.status === 200) {
+  //       var data = JSON.parse(xhr.responseText);
+  //       window.data = data;
+  //       globe.addData(data, {format: 'legend'});
+  //       globe.createPoints();
+  //       globe.animate();
+  //       document.body.style.backgroundImage = 'none'; // remove loading
+  //     }
+  //   }
+  // };
+  // xhr.send(null);
 
 </script>
 

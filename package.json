@@ -11,7 +11,10 @@
   "dependencies": {
     "ejs": "^2.5.2",
     "express": "^4.14.0",
+    "node-geocoder": "^3.15.0",
     "nodemon": "^1.11.0",
+    "sentiment": "^2.1.0",
+    "socket.io": "^1.5.0",
     "twitter": "^1.4.0"
   }
 }
