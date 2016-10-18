@@ -113,6 +113,7 @@
 
 <script type="text/javascript" src="/third-party/Detector.js"></script>
 <script type="text/javascript" src="/third-party/three.min.js"></script>
+<script type="text/javascript" src="/third-party/Tween.js"></script>
 <script type="text/javascript" src="/globe.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
@@ -142,12 +143,13 @@
     } else {
       color = 17;
     }
-    globe.addData([currentEvent.latitude,currentEvent.longitude, currentEvent.comparative, color], {format: "legend"});
+    globe.addData([currentEvent.latitude,currentEvent.longitude, new TWEEN.Tween(currentEvent).to({time: 0},200).start(), color], {format: "legend"});
     if (!initialized) {
 
       globe.animate();
       initialized = true;
     }
+    TWEEN.start();
     globe.createPoints();
   });
 

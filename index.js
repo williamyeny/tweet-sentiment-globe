@@ -6,7 +6,7 @@ var geocoder = require("node-geocoder")({provider: "google", apiKey: "AIzaSyCDUa
 var sentiment = require("sentiment");
 
 var keys = require("./config.json");
-console.log(keys);
+// console.log(keys);
 
 var port = 8080;
 
@@ -24,18 +24,14 @@ app.get("/", function(req, res) {
 });
 
 var server = app.listen(port, function() {
-  console.log("listening...");
+  console.log("server started");
   var stream = client.stream("statuses/filter", {track: "trump", language: "en"});
   stream.on('data', function(event) {
-    try {
-      if (event.user.location !== null) {
-        currentEvent.text = event.text;
-        currentEvent.location = event.user.location;
-        // console.log(currentEvent.location);
-      }
 
-    } catch (e) {
-      console.log("Error on stream: " + e);
+    if (event.user.location !== null && event.user.location !== undefined) {
+      currentEvent.text = event.text;
+      currentEvent.location = event.user.location;
+      console.log(currentEvent.location);
     }
 
   });
@@ -44,12 +40,13 @@ var server = app.listen(port, function() {
 var io = require('socket.io')(server);
 
 io.on("connection", function(socket) {
-  console.log("ayy");
+  console.log("connected");
 
   socket.on("get data", function() {
 
     //get coordinates
     geocoder.geocode(currentEvent.location, function(err, location) {
+      console.log("GEOCODE USED");
       try {
         currentEvent.latitude = location[0].latitude;
         currentEvent.longitude = location[0].longitude;
@@ -57,14 +54,14 @@ io.on("connection", function(socket) {
 
         socket.emit("get data", currentEvent);
       } catch (e) {
-        console.log("Error on sending data: " + e);
+        console.log("Error on sending data: " + err);
       }
     });
 
   });
 
   socket.on("disconnect", function(client) {
-    console.log("ded");
+    console.log("disconnected");
   });
 });
 
