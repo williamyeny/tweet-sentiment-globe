@@ -53,6 +53,7 @@
       background-color: rgba(0, 0, 0, 0.2);
       font: 20px/20px Georgia;
       padding: 15px;
+      line-height:1.2;
     }
 
     .year {
@@ -74,20 +75,6 @@
       color: #fff;
     }
 
-    #ce span {
-      display: none;
-    }
-
-    #ce {
-      width: 107px;
-      height: 55px;
-      display: block;
-      position: absolute;
-      bottom: 15px;
-      left: 20px;
-      background: url(/ce.png);
-    }
-
 
   </style>
 </head>
@@ -103,13 +90,8 @@
 </div>
 
 <div id="title">
-  Google Search Volume by Language
+  Geographical Sentiment Analysis of Trump-Related Tweets
 </div>
-
-<a id="ce" href="http://www.chromeexperiments.com/globe">
-  <span>This is a Chrome Experiment</span>
-</a>
-
 
 <script type="text/javascript" src="/third-party/Detector.js"></script>
 <script type="text/javascript" src="/third-party/three.min.js"></script>
@@ -136,14 +118,14 @@
 
 
   socket.on("get data", function(currentEvent) {
-    console.log(currentEvent);
+    // console.log(currentEvent);
     if (currentEvent.comparative < 0) {
       color = 7;
       currentEvent.comparative *= -1;
     } else {
       color = 17;
     }
-    globe.addData([currentEvent.latitude,currentEvent.longitude, new TWEEN.Tween(currentEvent).to({time: 0},200).start(), color], {format: "legend"});
+    globe.addData([currentEvent.latitude,currentEvent.longitude, currentEvent.comparative, color], {format: "legend"});
     if (!initialized) {
 
       globe.animate();
@@ -157,21 +139,6 @@
     document.body.style.backgroundImage = 'none'; // remove loading
     socket.emit("get data");
   }, 1000);
-  // var xhr = new XMLHttpRequest();
-  // xhr.open('GET', '/search-smol.json', true);
-  // xhr.onreadystatechange = function(e) {
-  //   if (xhr.readyState === 4) {
-  //     if (xhr.status === 200) {
-  //       var data = JSON.parse(xhr.responseText);
-  //       window.data = data;
-  //       globe.addData(data, {format: 'legend'});
-  //       globe.createPoints();
-  //       globe.animate();
-  //       document.body.style.backgroundImage = 'none'; // remove loading
-  //     }
-  //   }
-  // };
-  // xhr.send(null);
 
 </script>
 
