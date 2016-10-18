@@ -18,6 +18,31 @@ WebGL Globe
 socket.io
 
 ###Data:
-Twitter API
-node-geocoder
-sentiment
+twitter (npm package)
+node-geocoder (npm package)
+sentiment (npm package)
+
+## Running this project
+
+###config.json
+
+In order to run this project you must create a config.json file. Grab your Twitter API and Google Geocoding API keys.
+
+```
+{
+  "twitter": {
+    "consumer_key": "",
+    "consumer_secret": "",
+    "access_token_key": "",
+    "access_token_secret": ""
+  },
+  "geocoder": {
+    "api_key": ""
+  }
+
+}
+```
+
+###Launching
+
+Use `npm install` to install required packages. `node index.js` to launch and direct your browser to `http://localhost:8080`
