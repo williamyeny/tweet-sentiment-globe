@@ -114,6 +114,11 @@
     }
     //17 is green
     //7 is red
+
+    setInterval(function() {
+
+      socket.emit("get data");
+    }, 2000);
   });
 
 
@@ -125,20 +130,17 @@
     } else {
       color = 17;
     }
+    console.log("lat: " + currentEvent.latitude + " | long: " + currentEvent.longitude + " | comparative: " + currentEvent.comparative);
     globe.addData([currentEvent.latitude,currentEvent.longitude, currentEvent.comparative, color], {format: "legend"});
     if (!initialized) {
-
       globe.animate();
       initialized = true;
     }
-    TWEEN.start();
     globe.createPoints();
   });
 
-  window.setInterval(function() {
-    document.body.style.backgroundImage = 'none'; // remove loading
-    socket.emit("get data");
-  }, 1000);
+  document.body.style.backgroundImage = 'none'; // remove loading
+
 
 </script>
 
