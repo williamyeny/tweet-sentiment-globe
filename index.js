@@ -8,6 +8,7 @@ var sentiment = require("sentiment");
 var config = require("./config.json");
 
 var keys = config.twitter;
+console.log(keys);
 var client = new twitter(keys);
 
 var options = {provider: "google", apiKey: config.geocoder.api_key};
@@ -28,20 +29,23 @@ app.get("/", function(req, res) {
 
 var server = app.listen(port, function() {
   console.log("server started");
-  var stream = client.stream("statuses/filter", {track: "trump", language: "en"});
-  stream.on('data', function(event) {
-    try {
-      if (event.user.location !== null && event.user.location !== undefined) {
-        currentEvent.text = event.text;
-        currentEvent.location = event.user.location;
-        // console.log(currentEvent.location);
+
+  client.stream("statuses/filter", {track: "trump", language: "en", stall_warnings: true}, function(stream) {
+    stream.on('data', function(event) {
+      console.log(event);
+      try {
+        // if (event.user.location !== null) {
+          currentEvent.text = event.text;
+          currentEvent.location = event.user.location;
+          // console.log(event.text);
+        // }
+      } catch (e) {
+        console.log("Error on getting location: " + e);
       }
-    } catch (e) {
-      console.log("Error on getting location: " + e);
-    }
-
-
-
+    });
+    stream.on('error', function(error) {
+      console.log(error);
+    });
   });
 });
 
