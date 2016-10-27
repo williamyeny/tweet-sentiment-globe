@@ -50,3 +50,17 @@ In order to run this project you must create a config.json file. Grab your Twitt
 ###Launching
 
 Use `npm install` to install required packages. `node index.js` to launch and direct your browser to `http://localhost:8080`
+
+##(Anticipated) FAQ
+
+###Why Trump tweets?
+
+After much thought, I believed tweets relating to Trump would return the most interesting and extreme data. I considered adding a way to switch between Trump and Hillary keywords but due to the way Twitter Streaming API works it would overload my API key. Please note there is no political bias in this web app.
+
+###Why Streaming API as opposed to the RESTful API?
+
+The Streaming API lets me gather a theoretically infinite amount of data from just one call. Furthermore, the normal search tweet function only lets me gather 100 tweets per call. I created a workaround to gather a technically infinite amount of data but I had to do more calls, i.e. 10 calls for 1000 tweets.
+
+###Why is all your HTML, CSS and JS in one file?
+
+It came like that. Blame Google.
