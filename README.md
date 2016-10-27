@@ -1,6 +1,6 @@
 #Geographical Sentiment Analysis of Trump-Related Tweets
 
-Shows the location of live Trump-related tweets. It also shows the sentiment (whether the tweet has positive or negative "feeling") as bars.
+Shows the location of live Trump-related tweets as well as the sentiment (whether the tweet has positive or negative "feeling") in bars.
 
 Green bars have positive sentiment, red means negative. The length of the bar indicates the magnitude of the sentiment.
 
