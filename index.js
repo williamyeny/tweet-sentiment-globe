@@ -14,7 +14,7 @@ var client = new twitter(keys);
 var options = {provider: "google", apiKey: config.geocoder.api_key};
 var geocoder = nodeGeocoder(options);
 
-var port = 8080;
+var port = process.env.PORT || 8080;
 
 var currentEvent = {};
 
@@ -30,22 +30,23 @@ app.get("/", function(req, res) {
 var server = app.listen(port, function() {
   console.log("server started");
 
-  client.stream("statuses/filter", {track: "trump", language: "en", stall_warnings: true}, function(stream) {
-    stream.on('data', function(event) {
-      console.log(event);
-      try {
-        // if (event.user.location !== null) {
-          currentEvent.text = event.text;
-          currentEvent.location = event.user.location;
-          // console.log(event.text);
-        // }
-      } catch (e) {
-        console.log("Error on getting location: " + e);
+  var stream = client.stream("statuses/filter", {track: "trump", language: "en", stall_warnings: true});
+  stream.on('data', function(event) {
+    console.log(event);
+    try {
+      if (event.user.location !== null) {
+        currentEvent.text = event.text;
+        currentEvent.screen_name = event.user.screen_name;
+        currentEvent.name = event.user.name;
+        currentEvent.location = event.user.location;
+        console.log(event.text);
       }
-    });
-    stream.on('error', function(error) {
-      console.log(error);
-    });
+    } catch (e) {
+      console.log("Error on getting location: " + e);
+    }
+  });
+  stream.on('error', function(error) {
+    console.log(error);
   });
 });
 
@@ -77,7 +78,7 @@ io.on("connection", function(socket) {
   });
 });
 
-function searchTweet(query, iterations, callback, hash, since_id) { //recursive function to "add" tweets
+function searchTweet(query, iterations, callback, hash, since_id) { //obsolete due to Streaming API change
 
   if (since_id === undefined) { since_id = Number.MAX_VALUE; }
 
@@ -87,9 +88,6 @@ function searchTweet(query, iterations, callback, hash, since_id) { //recursive 
     } else {
       hash.statuses = hash.statuses.concat(tweets.statuses);
     }
-    // console.log("Error: " + error);
-    // console.log("Tweet: ");
-    // console.log(tweets);
 
     if (iterations > 1) {
       searchTweet(query, iterations - 1, callback, hash, tweets.statuses[tweets.statuses.length-1].id);
