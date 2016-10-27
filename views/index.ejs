@@ -19,18 +19,6 @@
       height: 100%;
     }
 
-    #info {
-
-      font-size: 11px;
-      position: absolute;
-      bottom: 5px;
-      background-color: rgba(0, 0, 0, 0.8);
-      border-radius: 3px;
-      right: 10px;
-      padding: 10px;
-
-    }
-
     a {
       color: #aaa;
       text-decoration: none;
@@ -56,24 +44,46 @@
       line-height:1.2;
     }
 
-    .year {
+    #info {
 
-      font: 16px Georgia;
-      line-height: 26px;
-      height: 30px;
-      text-align: center;
-      float: left;
-      width: 90px;
-      color: rgba(255, 255, 255, 0.4);
+      font-size: 11px;
+      position: absolute;
+      bottom: 5px;
+      background-color: rgba(0, 0, 0, 0.8);
+      border-radius: 3px;
+      right: 10px;
+      padding: 10px;
 
-      cursor: pointer;
-      -webkit-transition: all 0.1s ease-out;
     }
 
-    .year:hover, .year.active {
-      font-size: 23px;
-      color: #fff;
+    #tweet {
+      position: absolute;
+      bottom: 15px;
+      left:15px;
+      width: 400px;
+      font-family:Georgia;
     }
+
+    #tweet-name {
+      font-size:20px;
+    }
+
+    #tweet-screen-name {
+      font-size:16px;
+      margin-bottom:10px;
+      color:#c6c6c6;
+    }
+
+    #tweet-body {
+      font-size:25px;
+      margin-bottom:12px;
+      line-height: 1.1;
+    }
+
+    #tweet-score-container {
+      font-size:20px;
+    }
+
 
 
   </style>
@@ -93,6 +103,14 @@
   Geographical Sentiment Analysis of Trump-Related Tweets
 </div>
 
+<div id="tweet">
+  <div id="tweet-name">Hello</div>
+  <div id="tweet-screen-name">Please wait...</div>
+  <div id="tweet-body">We are loading data!</div>
+  <div id="tweet-score-container">Score: <span id="tweet-score">0</span></div>
+</div>
+
+
 <script type="text/javascript" src="/third-party/Detector.js"></script>
 <script type="text/javascript" src="/third-party/three.min.js"></script>
 <script type="text/javascript" src="/third-party/Tween.js"></script>
@@ -105,6 +123,8 @@
 
   var globe = DAT.Globe(document.getElementById('container'), {
     colorFn: function(label) {
+
+
        return new THREE.Color([
          0xd9d9d9, 0xb6b4b5, 0x9966cc, 0x15adff, 0x3e66a3,
          0x216288, 0xff7e7e, 0xff1f13, 0xc0120b, 0x5a1301, 0xffcc02,
@@ -115,20 +135,29 @@
     //17 is green
     //7 is red
 
-    setInterval(function() {
 
-      socket.emit("get data");
-    }, 2000);
+
   });
+
+  window.setInterval(function() {
+
+    socket.emit("get data");
+    console.log("getting...");
+  }, 3000);
 
 
   socket.on("get data", function(currentEvent) {
     // console.log(currentEvent);
     if (currentEvent.comparative < 0) {
       color = 7;
+      document.getElementById("tweet-score").style.color = "red";
       currentEvent.comparative *= -1;
-    } else {
+    } else if (currentEvent.comparative != 0) {
       color = 17;
+      document.getElementById("tweet-score").style.color = "green";
+    } else {
+      color = 0;
+      document.getElementById("tweet-score").style.color = "white";
     }
     console.log("lat: " + currentEvent.latitude + " | long: " + currentEvent.longitude + " | comparative: " + currentEvent.comparative);
     globe.addData([currentEvent.latitude,currentEvent.longitude, currentEvent.comparative, color], {format: "legend"});
@@ -137,6 +166,12 @@
       initialized = true;
     }
     globe.createPoints();
+
+    document.getElementById("tweet-name").innerHTML = currentEvent.name;
+    document.getElementById("tweet-body").innerHTML = currentEvent.text;
+    document.getElementById("tweet-screen-name").innerHTML = "@" + currentEvent.screen_name;
+    document.getElementById("tweet-score").innerHTML = currentEvent.comparative;
+
   });
 
   document.body.style.backgroundImage = 'none'; // remove loading
